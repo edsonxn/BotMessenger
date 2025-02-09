@@ -1,0 +1,232 @@
+{
+  "28335395249441923": [
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! Bienvenido a Frosty Market, ¿cómo puedo ayudarte hoy? Tenemos una amplia variedad de deliciosos productos para ofrecerte. 🍗🍟🧀"
+    },
+    {
+      "role": "user",
+      "content": "Vendes azúcar ?"
+    },
+    {
+      "role": "assistant",
+      "content": "Lo siento, pero en Frosty Market nos especializamos en productos de pollo, dedos de queso y diferentes tipos de papas. No vendemos productos como azúcar. ¿Puedo ayudarte a encontrar algo más de nuestro menú? 🍗🍟🧀🔥✨🤤"
+    },
+    {
+      "role": "user",
+      "content": "Vendes hamburguesas ?"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Sí! Vendemos deliciosas hamburguesas de pollo por $180.00/kg. ¿Te gustaría hacer un pedido? Y recuerda, tenemos un excelente servicio a domicilio. 🍔🐔🚚"
+    },
+    {
+      "role": "user",
+      "content": "De que hemos hablado"
+    },
+    {
+      "role": "assistant",
+      "content": "Hasta ahora, hemos hablado de los productos que tenemos disponibles en Frosty Market, incluidos nuestros diversos productos de pollo, dedos de queso y papas. Te informé que no vendemos azúcar. Actualmente estás interesado en nuestras hamburguesas de pollo, las cuales cuestan $180.00/kg. ¿Te gustaría realizar un pedido?"
+    },
+    {
+      "role": "user",
+      "content": "Si y también quiero boneless"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Excelente! Me complace tomar tu pedido. Tenemos Boneless de Pollo a $178.00/kg y Hamburguesas de Pollo a $180.00/kg. ¿Me podrías especificar cuánto deseas de cada uno? Por cierto, esto es importante, necesitaré también la dirección de entrega para poder confirmar el pedido. \n\nY recuerda, puedes pagar con tarjeta directamente en tu domicilio ya que llevamos nuestra terminal contigo, también aceptamos transferencias y efectivo. ¡Queremos facilitarte la experiencia al máximo!"
+    },
+    {
+      "role": "user",
+      "content": "Quiero 1 kilo de cada 1"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Perfecto! Entonces, tenemos 1 kg de Boneless de Pollo y 1 kg de Hamburguesas de Pollo para un total de $358.00. Para continuar con tu pedido, por favor proporciona la dirección a donde realizaremos el envío. Recuerda que nuestro servicio a domicilio es eficiente y seguro. ¿Cuál sería tu método de pago preferido: tarjeta, transferencia o efectivo?"
+    },
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola de nuevo! ¿En qué más puedo ayudarte? ¿Deseas agregar algo más a tu pedido de hamburguesas de pollo y boneless de pollo? 🍔🐔🍗🔥\n"
+    },
+    {
+      "role": "user",
+      "content": "Solo quiero eso"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Entendido! Así que serán 1 kg de Boneless de Pollo y 1 kg de Hamburguesas de Pollo. Te recuerdo que el costo total será de $358.00. Puedes pagar con tarjeta, transferencia o efectivo. Necesitamos tu dirección para el servicio a domicilio. ¿Podrías proporcionárnosla, por favor?"
+    },
+    {
+      "role": "user",
+      "content": "Es en cardenal 110 en Juchipila"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Perfecto! Tu pedido será enviado a Cardenal 110, Juchipila. Ahora, ¿quieres tu pedido para ahora mismo o para una hora específica? 🕐🚚🍔🍗"
+    },
+    {
+      "role": "user",
+      "content": "Para ahorita"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Excelente! Entonces, para confirmar:\n \nPedido: \n✅ 1 kg de Boneless de Pollo – $178.00 🐔🔥\n✅ 1 kg de Hamburguesas de Pollo – $180.00 🍔🐔\n \nTotal: $358.00 💸\n \nDirección de entrega: Cardenal 110, Juchipila 🏠🚚\n \nEnviaremos a un repartidor con tu pedido de inmediato y llevará la terminal por si deseas pagar con tarjeta. ¿Todo correcto?"
+    },
+    {
+      "role": "user",
+      "content": "Todo bien"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Perfecto! Ahora mismo preparamos tu pedido y lo enviamos en camino. Gracias por preferir Frosty Market. ¡Disfruta de tus deliciosos Boneless y Hamburguesas de Pollo! 🎉🎉"
+    },
+    {
+      "role": "user",
+      "content": "Gracias"
+    },
+    {
+      "role": "assistant",
+      "content": "¡De nada! Si necesitas algo más, no dudes en preguntar. ¡Disfruta de tu comida! 😊🍽️"
+    },
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola de nuevo! ¿Cómo puedo ayudarte ahora? ¿Necesitas agregar algo más a tu pedido? 🍔🐔🍗🔥✨🤤"
+    },
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! ¿Cómo puedo ayudarte hoy? ¿Necesitas hacer algún otro pedido o tienes alguna pregunta sobre nuestros productos?"
+    }
+  ],
+  "8956401167821034": [
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! Bienvenido a Frosty Market. ¿Cómo puedo ayudarte hoy? 🍔🍟🐔🧀🔥✨"
+    },
+    {
+      "role": "user",
+      "content": "Donde se ubica"
+    },
+    {
+      "role": "assistant",
+      "content": "Estamos ubicados en Juchipila, justo al lado de los tacos \"Ovnis\". 📍 ¿Desea realizar un pedido para recoger o para entrega a domicilio? 🚚💨"
+    },
+    {
+      "role": "user",
+      "content": "Que vende?"
+    },
+    {
+      "role": "assistant",
+      "content": "En Frosty Market tenemos una gran variedad de comidas deliciosas para ofrecer. Aquí está nuestra lista:\n\n✅ Boneless de Pollo – $178.00/kg 🐔🔥\n✅ Hamburguesas de Pollo – $180.00/kg 🍔🐔\n✅ Nuggets – $185.00/kg 🍗✨\n✅ Pollo estilo KFC – $185.00/kg 🤤🍗\n✅ Dedos de Queso – $95.00/kg 🧀🔥\n✅ Papa Lisa – $65.00/kg 🍟✨\n✅ Papa Ondulada – $75.00/kg 🍟🔥\n✅ Papa en Gajos – $90.00/kg 🍟🤤\n\n¿Le gustaría pedir algo de nuestra lista?"
+    },
+    {
+      "role": "user",
+      "content": "Quiero un kilo de papa lisa"
+    },
+    {
+      "role": "assistant",
+      "content": "Excelente elección, un kilo de Papa Lisa 🍟✨ por $65.00. ¿Le gustaría agregar algo más a su pedido?"
+    },
+    {
+      "role": "user",
+      "content": "No"
+    },
+    {
+      "role": "assistant",
+      "content": "Perfecto, entonces tu pedido hasta ahora es:\n\n✅ 1 kg de Papa Lisa – $65.00 🍟✨\n\nOfrecemos servicio a domicilio y puedes pagar con tarjeta, transferencia o en efectivo. ¿Podrías proporcionarme la dirección de entrega, por favor?"
+    },
+    {
+      "role": "user",
+      "content": "Cardenal 106 Reyna Elena"
+    },
+    {
+      "role": "assistant",
+      "content": "Excelente, tu pedido será enviado a Cardenal 106, Reyna Elena. \n\n✅ 1 kg de Papa Lisa – $65.00 🍟✨\n\n¿Deseas recibir tu pedido ahora mismo o a una hora específica?"
+    },
+    {
+      "role": "user",
+      "content": "A las 8"
+    },
+    {
+      "role": "assistant",
+      "content": "Perfecto, hemos programado tu pedido para las 8pm.\n\nEste es un resumen de tu pedido:\n\nDomicilio: Cardenal 106, Reyna Elena 📍\n✅ 1 kg de Papa Lisa – $65.00 🍟✨\n\nNuestro repartidor estará allí a las 8pm, y puedes pagar con tarjeta, transferencia o en efectivo. ¿Necesitas algo más?"
+    },
+    {
+      "role": "user",
+      "content": "No"
+    },
+    {
+      "role": "assistant",
+      "content": "Excelente, tu pedido esta confirmado y en camino a tu dirección a las 8pm 💨🚚\n\nGracias por elegir Frosty Market! Disfruta tus papas 🍟✨😋. Si necesitas algo más, no dudes en contactarnos. ¡Ten un gran día!"
+    },
+    {
+      "role": "user",
+      "content": "El para que cosa de quien?"
+    },
+    {
+      "role": "assistant",
+      "content": "Disculpa, no entendí tu última pregunta, ¿podrías aclararla por favor?"
+    }
+  ],
+  "9365264473538505": [
+    {
+      "role": "user",
+      "content": "Hola me da 2 kilos para llevar"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! Claro que sí, ¿podrías especificar de qué producto te gustaría esos 2 kilos? 🍗🍔🍟"
+    },
+    {
+      "role": "user",
+      "content": "Boneless"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Perfecto! Tendrás 2 kg de nuestros deliciosos Boneless de Pollo 🐔🔥. ¿Te gustaría agregar algo más a tu pedido?"
+    },
+    {
+      "role": "user",
+      "content": "Solo sería eso"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Está bien! Entonces tu pedido sería:\n\n✅ 2 kg de Boneless de Pollo – $356.00.\n\nFrosty Market te ofrece servicio a domicilio y varias opciones de pago. Puedes pagar directamente en casa con tarjeta, ya que llevamos la terminal bancaria, también aceptamos transferencias y pagos en efectivo. ¿Dónde te gustaría recibir tu pedido?"
+    },
+    {
+      "role": "user",
+      "content": "En la calle cardenal fraccionamiento reyna Elena #110"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Excelente! Confirmo tu pedido a la dirección: Calle Cardenal, Fraccionamiento Reina Elena #110. Para finalizar, ¿deseas tu pedido para ahora mismo o para una hora específica?"
+    },
+    {
+      "role": "user",
+      "content": "Para ahora"
+    },
+    {
+      "role": "assistant",
+      "content": "Perfecto. Tu pedido de 2 kg de Boneless de Pollo 🐔🔥 está en camino. En breve, nuestro repartidor llegará a la dirección que nos proporcionaste. ¡Gracias por elegir Frosty Market!"
+    }
+  ]
+}
