@@ -72,7 +72,7 @@ app.post('/webhook', async (req, res) => {
             const userHistory = getHistory(senderId);
 
             // Limitar el historial a los últimos 6 mensajes
-            const limitedHistory = userHistory.slice(-6);
+            const limitedHistory = userHistory.slice(-8);
 
             // Agregar el mensaje del usuario al historial
             saveMessage(senderId, 'user', messageText);
