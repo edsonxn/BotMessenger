@@ -68,15 +68,18 @@ app.post('/webhook', async (req, res) => {
             console.log(`ID del remitente: ${senderId}`);
             console.log(`Texto del mensaje: ${messageText}`);
 
-            // Obtener el historial del usuario
+            // Obtener el historial completo del usuario
             const userHistory = getHistory(senderId);
+
+            // Limitar el historial a los últimos 6 mensajes
+            const limitedHistory = userHistory.slice(-6);
 
             // Agregar el mensaje del usuario al historial
             saveMessage(senderId, 'user', messageText);
 
-            // Generar respuesta con OpenAI usando el historial
+            // Generar respuesta con OpenAI usando el historial limitado
             const gptResponse = await chat(prompt, [
-                ...userHistory,
+                ...limitedHistory,
                 { role: "user", content: messageText },
             ]);
 
