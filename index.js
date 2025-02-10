@@ -54,12 +54,20 @@ app.get('/webhook', (req, res) => {
 });
 
 // Función para obtener etiquetas de una conversación
+// Función para obtener etiquetas de una conversación
 async function getTags(senderId) {
     try {
         const response = await axios.get(
-            `https://graph.facebook.com/v18.0/${senderId}/tags?access_token=${PAGE_ACCESS_TOKEN}`
+            `https://graph.facebook.com/v18.0/me/custom_labels?fields=name&access_token=${PAGE_ACCESS_TOKEN}`
         );
-        return response.data.data.map(tag => tag.name);
+
+        const labels = response.data.data;
+        const userLabelResponse = await axios.get(
+            `https://graph.facebook.com/v18.0/${senderId}/custom_labels?access_token=${PAGE_ACCESS_TOKEN}`
+        );
+
+        const userLabels = userLabelResponse.data.data.map(label => label.name);
+        return userLabels;
     } catch (error) {
         console.error('Error obteniendo etiquetas:', error.response ? error.response.data : error.message);
         return [];
@@ -115,6 +123,7 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
+
 
 // Inicia el servidor
 const PORT = process.env.PORT || 3090;
