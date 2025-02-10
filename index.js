@@ -53,6 +53,19 @@ app.get('/webhook', (req, res) => {
     }
 });
 
+// Función para obtener etiquetas de una conversación
+async function getTags(senderId) {
+    try {
+        const response = await axios.get(
+            `https://graph.facebook.com/v18.0/${senderId}/tags?access_token=${PAGE_ACCESS_TOKEN}`
+        );
+        return response.data.data.map(tag => tag.name);
+    } catch (error) {
+        console.error('Error obteniendo etiquetas:', error.response ? error.response.data : error.message);
+        return [];
+    }
+}
+
 // Ruta para manejar mensajes entrantes
 app.post('/webhook', async (req, res) => {
     const body = req.body;
@@ -60,13 +73,20 @@ app.post('/webhook', async (req, res) => {
     if (body.object === 'page') {
         body.entry.forEach(async (entry) => {
             const webhookEvent = entry.messaging[0];
-            //console.log('Mensaje entrante:', webhookEvent);
-
             const senderId = webhookEvent.sender.id;
             const messageText = webhookEvent.message.text;
 
             console.log(`ID del remitente: ${senderId}`);
             console.log(`Texto del mensaje: ${messageText}`);
+
+            // Obtener etiquetas del remitente
+            const tags = await getTags(senderId);
+
+            // Si la etiqueta "pedido" está presente, no responde
+            if (tags.includes("pedido")) {
+                console.log(`Etiqueta "pedido" detectada. No se responderá al mensaje de ${senderId}.`);
+                return;
+            }
 
             // Obtener el historial completo del usuario
             const userHistory = getHistory(senderId);
