@@ -54,22 +54,16 @@ app.get('/webhook', (req, res) => {
 });
 
 // Función para obtener etiquetas de una conversación
-// Función para obtener etiquetas de una conversación
-async function getTags(senderId) {
+// Función para obtener las notas de una conversación
+async function getNotes(senderId) {
     try {
         const response = await axios.get(
-            `https://graph.facebook.com/v18.0/me/custom_labels?fields=name&access_token=${PAGE_ACCESS_TOKEN}`
+            `https://graph.facebook.com/v18.0/${senderId}/notes?access_token=${PAGE_ACCESS_TOKEN}`
         );
-
-        const labels = response.data.data;
-        const userLabelResponse = await axios.get(
-            `https://graph.facebook.com/v18.0/${senderId}/custom_labels?access_token=${PAGE_ACCESS_TOKEN}`
-        );
-
-        const userLabels = userLabelResponse.data.data.map(label => label.name);
-        return userLabels;
+        const notes = response.data.data.map(note => note.body); // Extraer el contenido de las notas
+        return notes;
     } catch (error) {
-        console.error('Error obteniendo etiquetas:', error.response ? error.response.data : error.message);
+        console.error('Error obteniendo notas:', error.response ? error.response.data : error.message);
         return [];
     }
 }
@@ -87,34 +81,26 @@ app.post('/webhook', async (req, res) => {
             console.log(`ID del remitente: ${senderId}`);
             console.log(`Texto del mensaje: ${messageText}`);
 
-            // Obtener etiquetas del remitente
-            const tags = await getTags(senderId);
+            // Obtener las notas del remitente
+            const notes = await getNotes(senderId);
 
-            // Si la etiqueta "pedido" está presente, no responde
-            if (tags.includes("pedido")) {
-                console.log(`Etiqueta "pedido" detectada. No se responderá al mensaje de ${senderId}.`);
+            // Si alguna nota contiene "pedido", no responde
+            if (notes.some(note => note.toLowerCase().includes("pedido"))) {
+                console.log(`Nota con "pedido" detectada. No se responderá al mensaje de ${senderId}.`);
                 return;
             }
 
-            // Obtener el historial completo del usuario
+            // Continuar con la lógica de respuesta si no hay notas relevantes
             const userHistory = getHistory(senderId);
-
-            // Limitar el historial a los últimos 6 mensajes
             const limitedHistory = userHistory.slice(-8);
-
-            // Agregar el mensaje del usuario al historial
             saveMessage(senderId, 'user', messageText);
 
-            // Generar respuesta con OpenAI usando el historial limitado
             const gptResponse = await chat(prompt, [
                 ...limitedHistory,
                 { role: "user", content: messageText },
             ]);
 
-            // Guardar la respuesta del bot en el historial
             saveMessage(senderId, 'assistant', gptResponse);
-
-            // Enviar respuesta al usuario
             await sendMessage(senderId, gptResponse);
         });
 
@@ -123,6 +109,7 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
+
 
 
 // Inicia el servidor
