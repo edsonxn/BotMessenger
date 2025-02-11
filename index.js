@@ -92,11 +92,12 @@ app.post('/webhook', async (req, res) => {
                 if (webhookEvent.message && webhookEvent.message.is_echo) {
                     console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje a ${recipientId}`);
 
-                    // 📌 Activar pausa SOLO si el mensaje no proviene del bot (o sea, si el admin escribió manualmente)
-                    if (senderId === PAGE_ID) {
-                        console.log(`🚫 Mensaje de eco ignorado (proviene del bot).`);
-                    } else {
+                    // 📌 Solo pausar si el ADMIN está respondiendo a un usuario real y no a la página
+                    if (recipientId !== PAGE_ID) { 
                         pauseUser(recipientId);
+                        console.log(`⏸️ Bot pausado para ${recipientId} porque el ADMIN envió un mensaje.`);
+                    } else {
+                        console.log(`🚫 Mensaje de eco ignorado (proviene del bot).`);
                     }
 
                     return;
@@ -144,6 +145,7 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
+
 
 
 
