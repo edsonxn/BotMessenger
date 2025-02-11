@@ -106,6 +106,7 @@ app.post('/webhook', async (req, res) => {
                 const recipientId = webhookEvent.recipient.id;
 
                 // 📌 Verificar si el mensaje es un "eco" (is_echo: true) -> Mensaje del ADMIN
+                // 📌 Verificar si el mensaje es un "eco" (is_echo: true) -> Mensaje del ADMIN
                 if (webhookEvent.message && webhookEvent.message.is_echo) {
                     console.log(`🔹 Mensaje de eco detectado en la conversación con ${recipientId}`);
 
@@ -114,8 +115,8 @@ app.post('/webhook', async (req, res) => {
                         console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje. Pausando bot.`);
                         pauseUser(recipientId);
 
-                        // 📌 Guardar mensaje del ADMIN en el historial
-                        saveMessage(recipientId, 'admin', webhookEvent.message.text);
+                        // 📌 Guardar mensaje del ADMIN en el historial con role: "system"
+                        saveMessage(recipientId, 'system', webhookEvent.message.text);
                         console.log(`📥 Mensaje del ADMIN guardado en el historial.`);
                     } else {
                         console.log(`🚫 Mensaje de eco ignorado (enviado por el bot).`);
@@ -123,6 +124,7 @@ app.post('/webhook', async (req, res) => {
 
                     return;
                 }
+
 
                 // 📩 Mensaje recibido del usuario real
                 if (webhookEvent.message && webhookEvent.message.text) {
