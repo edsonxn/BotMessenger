@@ -92,11 +92,11 @@ app.post('/webhook', async (req, res) => {
                 if (webhookEvent.message && webhookEvent.message.is_echo) {
                     console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje a ${recipientId}`);
 
-                    // 📌 Pausar solo si el ADMIN envió el mensaje
-                    if (recipientId !== PAGE_ID) { // Verificar que el mensaje no fue del bot mismo
-                        pauseUser(recipientId);
+                    // 📌 Activar pausa SOLO si el mensaje no proviene del bot (o sea, si el admin escribió manualmente)
+                    if (senderId === PAGE_ID) {
+                        console.log(`🚫 Mensaje de eco ignorado (proviene del bot).`);
                     } else {
-                        console.log(`🚫 Mensaje de eco ignorado (enviado por el bot).`);
+                        pauseUser(recipientId);
                     }
 
                     return;
@@ -121,6 +121,7 @@ app.post('/webhook', async (req, res) => {
                     const limitedHistory = userHistory.slice(-8);
                     saveMessage(senderId, 'user', webhookEvent.message.text);
 
+                    // 📌 Generar respuesta con OpenAI
                     const gptResponse = await chat(prompt, [
                         ...limitedHistory,
                         { role: "user", content: webhookEvent.message.text },
@@ -128,6 +129,12 @@ app.post('/webhook', async (req, res) => {
 
                     saveMessage(senderId, 'assistant', gptResponse);
                     await sendMessage(senderId, gptResponse);
+
+                    // 📌 QUITAR LA PAUSA cuando el bot responda automáticamente
+                    if (pausedUsers[senderId]) {
+                        delete pausedUsers[senderId];
+                        console.log(`✅ Pausa eliminada para ${senderId} porque el bot respondió.`);
+                    }
                 }
             });
         });
@@ -137,6 +144,7 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
+
 
 
 
