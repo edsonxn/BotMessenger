@@ -11,6 +11,8 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use(blacklistRoutes); // Usa correctamente las rutas de la blacklist
+const PAGE_ID = "554787744380577"; // Reemplaza con el ID real de tu página
+
 
 // Endpoint para pausar el bot por 5 minutos para un usuario
 app.post('/pause-user', (req, res) => {
@@ -84,12 +86,17 @@ app.post('/webhook', async (req, res) => {
         body.entry.forEach(async (entry) => {
             entry.messaging.forEach(async (webhookEvent) => {
                 const senderId = webhookEvent.sender.id;
-                const recipientId = webhookEvent.recipient.id; // 📌 ID del usuario con quien se habla
+                const recipientId = webhookEvent.recipient.id;
 
-                // 📌 Si el mensaje fue enviado por el ADMIN (is_echo: true)
+                // 📌 Verificar si el mensaje es un mensaje de "eco" (enviado por la misma página)
                 if (webhookEvent.message && webhookEvent.message.is_echo) {
                     console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje a ${recipientId}`);
-                    pauseUser(recipientId); // Pausar al usuario correcto
+
+                    // 📌 Verificar si el mensaje NO fue enviado por el bot antes de pausar
+                    if (senderId !== PAGE_ID) { // 📌 Asegurar que no es un mensaje automático del bot
+                        pauseUser(recipientId);
+                    }
+
                     return;
                 }
 
@@ -128,6 +135,7 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
+
 
 // Ruta para quitar la pausa de un usuario
 app.post('/unpause', (req, res) => {
