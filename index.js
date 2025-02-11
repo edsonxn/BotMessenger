@@ -71,9 +71,17 @@ const pausedUsers = {}; // Objeto para almacenar los usuarios en pausa temporal
 
 // 📌 Pausar el bot para un usuario durante 5 minutos
 function pauseUser(senderId) {
-    pausedUsers[senderId] = Date.now() + 5 * 60 * 1000; // Tiempo actual + 5 minutos
-    console.log(`⏸️ Bot pausado para ${senderId} hasta ${new Date(pausedUsers[senderId]).toLocaleTimeString()}`);
+    const pauseDuration = 5 * 60 * 1000; // 5 minutos en milisegundos
+    const pauseUntil = Date.now() + pauseDuration;
+
+    pausedUsers[senderId] = pauseUntil;
+
+    // 📌 Convertir la hora de la pausa a la zona horaria local
+    const pauseTimeLocal = new Date(pauseUntil).toLocaleString('es-MX', { timeZone: 'America/Mexico_City' });
+
+    console.log(`⏸️ Bot pausado para ${senderId} hasta ${pauseTimeLocal}`);
 }
+
 
 // 📌 Verificar si un usuario está pausado
 function isUserPaused(senderId) {
