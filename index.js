@@ -88,13 +88,15 @@ app.post('/webhook', async (req, res) => {
                 const senderId = webhookEvent.sender.id;
                 const recipientId = webhookEvent.recipient.id;
 
-                // 📌 Verificar si el mensaje es un mensaje de "eco" (enviado por la misma página)
+                // 📌 Verificar si el mensaje es un "eco" (is_echo: true)
                 if (webhookEvent.message && webhookEvent.message.is_echo) {
                     console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje a ${recipientId}`);
 
-                    // 📌 Verificar si el mensaje NO fue enviado por el bot antes de pausar
-                    if (senderId !== PAGE_ID) { // 📌 Asegurar que no es un mensaje automático del bot
+                    // 📌 Pausar solo si el ADMIN envió el mensaje
+                    if (recipientId !== PAGE_ID) { // Verificar que el mensaje no fue del bot mismo
                         pauseUser(recipientId);
+                    } else {
+                        console.log(`🚫 Mensaje de eco ignorado (enviado por el bot).`);
                     }
 
                     return;
@@ -135,6 +137,7 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
+
 
 
 // Ruta para quitar la pausa de un usuario
