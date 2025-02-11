@@ -5,9 +5,13 @@ const axios = require('axios');
 const fs = require('fs');
 const chat = require('./openaiChat'); // Función de OpenAI
 const { getHistory, saveMessage } = require('./conversationHistory'); // Manejo del historial
+const { getBlacklist } = require('./blacklist'); // Importa la función correctamente
 
 const app = express();
 app.use(bodyParser.json());
+
+const blacklistRoutes = require('./blacklist'); // Importa las rutas
+app.use(blacklistRoutes); // Usa las rutas en Express
 
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || 'xboxhalo3';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
@@ -53,24 +57,6 @@ app.get('/webhook', (req, res) => {
     }
 });
 
-// Función para obtener etiquetas de una conversación
-// Función para obtener las notas de una conversación
-async function getNotes(senderId) {
-    try {
-        const response = await axios.get(
-            `https://graph.facebook.com/v18.0/${senderId}/notes?access_token=${PAGE_ACCESS_TOKEN}`
-        );
-        const notes = response.data.data.map(note => note.body); // Extraer el contenido de las notas
-        return notes;
-    } catch (error) {
-        console.error('Error obteniendo notas:', error.response ? error.response.data : error.message);
-        return [];
-    }
-}
-
-// Ruta para manejar mensajes entrantes
-const { getBlacklist } = require('./blacklist');
-
 // Webhook para manejar mensajes entrantes
 app.post('/webhook', async (req, res) => {
     const body = req.body;
@@ -112,9 +98,6 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
-
-
-
 
 // Inicia el servidor
 const PORT = process.env.PORT || 3090;
