@@ -69,6 +69,9 @@ async function getNotes(senderId) {
 }
 
 // Ruta para manejar mensajes entrantes
+const { getBlacklist } = require('./blacklist');
+
+// Webhook para manejar mensajes entrantes
 app.post('/webhook', async (req, res) => {
     const body = req.body;
 
@@ -81,16 +84,16 @@ app.post('/webhook', async (req, res) => {
             console.log(`ID del remitente: ${senderId}`);
             console.log(`Texto del mensaje: ${messageText}`);
 
-            // Obtener las notas del remitente
-            const notes = await getNotes(senderId);
+            // Obtener la lista negra desde el archivo
+            const blacklist = getBlacklist();
 
-            // Si alguna nota contiene "pedido", no responde
-            if (notes.some(note => note.toLowerCase().includes("pedido"))) {
-                console.log(`Nota con "pedido" detectada. No se responderá al mensaje de ${senderId}.`);
+            // Si el usuario está en la lista negra, no responder
+            if (blacklist.includes(senderId)) {
+                console.log(`Usuario en lista negra detectado (${senderId}). No se responderá.`);
                 return;
             }
 
-            // Continuar con la lógica de respuesta si no hay notas relevantes
+            // Continuar con la lógica del bot...
             const userHistory = getHistory(senderId);
             const limitedHistory = userHistory.slice(-8);
             saveMessage(senderId, 'user', messageText);
@@ -109,6 +112,7 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
+
 
 
 
