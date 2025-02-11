@@ -43,20 +43,29 @@ try {
 }
 
 // Función para enviar mensajes a Messenger
+const botMessages = new Set(); // Almacenar los mensajes que el bot envió
+
+// Función para enviar mensajes a Messenger
 async function sendMessage(senderId, responseText) {
     try {
-        await axios.post(
+        const response = await axios.post(
             `https://graph.facebook.com/v18.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
             {
                 recipient: { id: senderId },
                 message: { text: responseText },
             }
         );
+
+        if (response.data.message_id) {
+            botMessages.add(response.data.message_id); // Guardar el ID del mensaje enviado
+        }
+
         console.log('Mensaje enviado:', responseText);
     } catch (error) {
         console.error('Error enviando mensaje:', error.response ? error.response.data : error.message);
     }
 }
+
 
 const pausedUsers = {}; // Objeto para almacenar los usuarios en pausa temporal
 
@@ -90,14 +99,15 @@ app.post('/webhook', async (req, res) => {
 
                 // 📌 Verificar si el mensaje es un "eco" (is_echo: true)
                 if (webhookEvent.message && webhookEvent.message.is_echo) {
-                    console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje a ${recipientId}`);
+                    console.log(`🔹 Mensaje de eco detectado en la conversación con ${recipientId}`);
 
-                    // 📌 Solo pausar si el ADMIN está respondiendo a un usuario real y no a la página
-                    if (recipientId !== PAGE_ID) { 
-                        pauseUser(recipientId);
-                        console.log(`⏸️ Bot pausado para ${recipientId} porque el ADMIN envió un mensaje.`);
+                    // 📌 Verificar si el mensaje fue enviado por el bot usando su ID
+                    if (botMessages.has(webhookEvent.message.mid)) {
+                        console.log(`🚫 Mensaje de eco ignorado (enviado por el bot).`);
+                        botMessages.delete(webhookEvent.message.mid); // Eliminarlo del registro después de verificarlo
                     } else {
-                        console.log(`🚫 Mensaje de eco ignorado (proviene del bot).`);
+                        console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje. Pausando bot.`);
+                        pauseUser(recipientId);
                     }
 
                     return;
