@@ -84,40 +84,37 @@ app.post('/webhook', async (req, res) => {
         body.entry.forEach(async (entry) => {
             entry.messaging.forEach(async (webhookEvent) => {
                 const senderId = webhookEvent.sender.id;
+                const recipientId = webhookEvent.recipient.id; // 📌 ID del usuario con quien se habla
 
-                // 📌 Detectar si el mensaje fue enviado por el ADMIN (usando is_echo)
+                // 📌 Si el mensaje fue enviado por el ADMIN (is_echo: true)
                 if (webhookEvent.message && webhookEvent.message.is_echo) {
-                    console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje en la conversación con ${senderId}`);
-                    pauseUser(senderId); // Pausar al usuario por 5 minutos
+                    console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje a ${recipientId}`);
+                    pauseUser(recipientId); // Pausar al usuario correcto
                     return;
                 }
 
-                // 📩 MENSAJE RECIBIDO (Usuario → Bot)
+                // 📩 Mensaje recibido del usuario real
                 if (webhookEvent.message && webhookEvent.message.text) {
-                    const messageText = webhookEvent.message.text;
-                    console.log(`📩 MENSAJE RECIBIDO | Usuario: ${senderId} | Texto: ${messageText}`);
+                    console.log(`📩 MENSAJE RECIBIDO | Usuario: ${senderId} | Texto: ${webhookEvent.message.text}`);
 
-                    // 📌 Si el usuario está en la lista negra, no responder
                     const blacklist = getBlacklist();
                     if (blacklist.some(user => user.id === senderId)) {
                         console.log(`⛔ Usuario en lista negra (${senderId}). No se responderá.`);
                         return;
                     }
 
-                    // 📌 Si el usuario está pausado, no responder
                     if (isUserPaused(senderId)) {
                         console.log(`⏸️ Usuario ${senderId} está pausado. No se responderá.`);
                         return;
                     }
 
-                    // 📌 Continuar con la lógica del bot...
                     const userHistory = getHistory(senderId);
                     const limitedHistory = userHistory.slice(-8);
-                    saveMessage(senderId, 'user', messageText);
+                    saveMessage(senderId, 'user', webhookEvent.message.text);
 
                     const gptResponse = await chat(prompt, [
                         ...limitedHistory,
-                        { role: "user", content: messageText },
+                        { role: "user", content: webhookEvent.message.text },
                     ]);
 
                     saveMessage(senderId, 'assistant', gptResponse);
@@ -131,6 +128,7 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
+
 
 
 
