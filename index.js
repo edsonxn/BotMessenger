@@ -58,14 +58,13 @@ async function sendMessage(senderId, responseText) {
 
 const pausedUsers = {}; // Objeto para almacenar los usuarios en pausa temporal
 
-// Función para pausar un usuario por 5 minutos
+// 📌 Pausar el bot para un usuario durante 5 minutos
 function pauseUser(senderId) {
-    pausedUsers[senderId] = Date.now() + 5 * 60 * 1000; // 5 minutos
+    pausedUsers[senderId] = Date.now() + 5 * 60 * 1000; // Tiempo actual + 5 minutos
     console.log(`⏸️ Bot pausado para ${senderId} hasta ${new Date(pausedUsers[senderId]).toLocaleTimeString()}`);
 }
 
-
-// Función para verificar si un usuario está pausado
+// 📌 Verificar si un usuario está pausado
 function isUserPaused(senderId) {
     if (pausedUsers[senderId] && Date.now() < pausedUsers[senderId]) {
         console.log(`⏳ Usuario ${senderId} sigue pausado hasta ${new Date(pausedUsers[senderId]).toLocaleTimeString()}`);
@@ -73,6 +72,7 @@ function isUserPaused(senderId) {
     }
     return false;
 }
+
 
 
 
@@ -85,14 +85,14 @@ app.post('/webhook', async (req, res) => {
             entry.messaging.forEach(async (webhookEvent) => {
                 const senderId = webhookEvent.sender.id;
 
-                // 📌 Detectar Mensajes Enviados por el Administrador
+                // 📌 Detectar si el mensaje fue enviado por el ADMIN (usando is_echo)
                 if (webhookEvent.message && webhookEvent.message.is_echo) {
-                    console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje a ${senderId}`);
+                    console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje en la conversación con ${senderId}`);
                     pauseUser(senderId); // Pausar al usuario por 5 minutos
                     return;
                 }
 
-                // 📌 Detectar Mensajes Recibidos (Usuario → Bot)
+                // 📩 MENSAJE RECIBIDO (Usuario → Bot)
                 if (webhookEvent.message && webhookEvent.message.text) {
                     const messageText = webhookEvent.message.text;
                     console.log(`📩 MENSAJE RECIBIDO | Usuario: ${senderId} | Texto: ${messageText}`);
@@ -131,6 +131,7 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
+
 
 
 // Inicia el servidor
