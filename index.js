@@ -148,7 +148,7 @@ app.post('/webhook', async (req, res) => {
                     }
 
                     const userHistory = getHistory(senderId);
-                    const limitedHistory = userHistory.slice(-16);
+                    const limitedHistory = userHistory.slice(-10);
 
                     // 📌 Generar respuesta con OpenAI
                     const gptResponse = await chat(prompt, [
