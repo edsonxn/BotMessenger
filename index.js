@@ -130,6 +130,14 @@ app.post('/webhook', async (req, res) => {
 });
 
 
+// Endpoint para obtener la lista de usuarios pausados
+app.get('/paused-users', (req, res) => {
+    const pausedList = Object.entries(pausedUsers).map(([id, time]) => ({
+        id,
+        until: new Date(time).toLocaleString() // Fecha legible
+    }));
+    res.json({ pausedUsers: pausedList });
+});
 
 
 // Inicia el servidor
