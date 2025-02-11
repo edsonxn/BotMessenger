@@ -12,6 +12,20 @@ app.use(bodyParser.json());
 
 app.use(blacklistRoutes); // Usa correctamente las rutas de la blacklist
 
+// Endpoint para pausar el bot por 5 minutos para un usuario
+app.post('/pause-user', (req, res) => {
+    const { userId } = req.body;
+
+    if (!userId) {
+        return res.status(400).send('Falta el userId');
+    }
+
+    pauseUser(userId);
+    console.log(`Bot desactivado para ${userId} durante 5 minutos.`);
+    res.send(`Bot desactivado para ${userId} durante 5 minutos.`);
+});
+
+
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || 'xboxhalo3';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 
@@ -42,21 +56,20 @@ async function sendMessage(senderId, responseText) {
     }
 }
 
+const pausedUsers = {}; // Objeto para almacenar los usuarios en pausa temporal
+
+// Función para pausar un usuario por 5 minutos
+function pauseUser(senderId) {
+    pausedUsers[senderId] = Date.now() + 5 * 60 * 1000; // Tiempo actual + 5 minutos
+}
+
+// Función para verificar si un usuario está pausado
+function isUserPaused(senderId) {
+    return pausedUsers[senderId] && Date.now() < pausedUsers[senderId];
+}
+
+
 // Ruta para verificar el webhook
-app.get('/webhook', (req, res) => {
-    const mode = req.query['hub.mode'];
-    const token = req.query['hub.verify_token'];
-    const challenge = req.query['hub.challenge'];
-
-    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-        console.log('WEBHOOK_VERIFIED');
-        res.status(200).send(challenge);
-    } else {
-        res.sendStatus(403);
-    }
-});
-
-// Webhook para manejar mensajes entrantes
 app.post('/webhook', async (req, res) => {
     const body = req.body;
 
@@ -69,12 +82,16 @@ app.post('/webhook', async (req, res) => {
             console.log(`ID del remitente: ${senderId}`);
             console.log(`Texto del mensaje: ${messageText}`);
 
-            // Obtener la lista negra desde el archivo
+            // 📌 Si el usuario está en la lista negra, no responder
             const blacklist = getBlacklist();
-
-            // Si el usuario está en la lista negra, no responder
-            if (blacklist.includes(senderId)) {
+            if (blacklist.some(user => user.id === senderId)) {
                 console.log(`Usuario en lista negra detectado (${senderId}). No se responderá.`);
+                return;
+            }
+
+            // 📌 Si el usuario está pausado, no responder
+            if (isUserPaused(senderId)) {
+                console.log(`Usuario ${senderId} está pausado. No se responderá.`);
                 return;
             }
 
@@ -97,6 +114,7 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
+
 
 // Inicia el servidor
 const PORT = process.env.PORT || 3090;
