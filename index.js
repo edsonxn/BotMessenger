@@ -129,6 +129,18 @@ app.post('/webhook', async (req, res) => {
     }
 });
 
+// Ruta para quitar la pausa de un usuario
+app.post('/unpause', (req, res) => {
+    const { userId } = req.body;
+
+    if (pausedUsers[userId]) {
+        delete pausedUsers[userId]; // Eliminar el usuario de la lista de pausados
+        console.log(`✅ Pausa eliminada para ${userId}`);
+    }
+
+    res.json({ success: true });
+});
+
 
 // Endpoint para obtener la lista de usuarios pausados
 app.get('/paused-users', (req, res) => {
