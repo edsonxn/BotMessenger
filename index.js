@@ -5,13 +5,12 @@ const axios = require('axios');
 const fs = require('fs');
 const chat = require('./openaiChat'); // Función de OpenAI
 const { getHistory, saveMessage } = require('./conversationHistory'); // Manejo del historial
-const { getBlacklist } = require('./blacklist'); // Importa la función correctamente
+const { router: blacklistRoutes, getBlacklist } = require('./blacklist'); // Importa el router correctamente
 
 const app = express();
 app.use(bodyParser.json());
 
-const blacklistRoutes = require('./blacklist'); // Importa las rutas
-app.use(blacklistRoutes); // Usa las rutas en Express
+app.use(blacklistRoutes); // Usa correctamente las rutas de la blacklist
 
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || 'xboxhalo3';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
