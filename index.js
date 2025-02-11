@@ -105,17 +105,20 @@ app.post('/webhook', async (req, res) => {
                 const senderId = webhookEvent.sender.id;
                 const recipientId = webhookEvent.recipient.id;
 
-                // 📌 Verificar si el mensaje es un "eco" (is_echo: true)
+                // 📌 Verificar si el mensaje es un "eco" (is_echo: true) -> Mensaje del ADMIN
                 if (webhookEvent.message && webhookEvent.message.is_echo) {
                     console.log(`🔹 Mensaje de eco detectado en la conversación con ${recipientId}`);
 
-                    // 📌 Verificar si el mensaje fue enviado por el bot usando su ID
-                    if (botMessages.has(webhookEvent.message.mid)) {
-                        console.log(`🚫 Mensaje de eco ignorado (enviado por el bot).`);
-                        botMessages.delete(webhookEvent.message.mid); // Eliminarlo del registro después de verificarlo
-                    } else {
+                    // 📌 Si el mensaje NO es del bot, significa que el ADMIN está hablando
+                    if (!botMessages.has(webhookEvent.message.mid)) {
                         console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje. Pausando bot.`);
                         pauseUser(recipientId);
+
+                        // 📌 Guardar mensaje del ADMIN en el historial
+                        saveMessage(recipientId, 'admin', webhookEvent.message.text);
+                        console.log(`📥 Mensaje del ADMIN guardado en el historial.`);
+                    } else {
+                        console.log(`🚫 Mensaje de eco ignorado (enviado por el bot).`);
                     }
 
                     return;
@@ -125,20 +128,25 @@ app.post('/webhook', async (req, res) => {
                 if (webhookEvent.message && webhookEvent.message.text) {
                     console.log(`📩 MENSAJE RECIBIDO | Usuario: ${senderId} | Texto: ${webhookEvent.message.text}`);
 
+                    // 📌 Guardar el mensaje del usuario en el historial SIEMPRE
+                    saveMessage(senderId, 'user', webhookEvent.message.text);
+                    console.log(`📥 Mensaje del usuario guardado en el historial.`);
+
+                    // 📌 Verificar si el usuario está en la lista negra
                     const blacklist = getBlacklist();
                     if (blacklist.some(user => user.id === senderId)) {
                         console.log(`⛔ Usuario en lista negra (${senderId}). No se responderá.`);
                         return;
                     }
 
+                    // 📌 Si el usuario está pausado, NO responder pero seguir guardando mensajes
                     if (isUserPaused(senderId)) {
-                        console.log(`⏸️ Usuario ${senderId} está pausado. No se responderá.`);
+                        console.log(`⏸️ Usuario ${senderId} está pausado. Mensaje guardado pero no se responderá.`);
                         return;
                     }
 
                     const userHistory = getHistory(senderId);
                     const limitedHistory = userHistory.slice(-8);
-                    saveMessage(senderId, 'user', webhookEvent.message.text);
 
                     // 📌 Generar respuesta con OpenAI
                     const gptResponse = await chat(prompt, [
@@ -163,6 +171,7 @@ app.post('/webhook', async (req, res) => {
         res.sendStatus(404);
     }
 });
+
 
 
 
