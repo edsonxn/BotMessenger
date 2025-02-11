@@ -60,13 +60,20 @@ const pausedUsers = {}; // Objeto para almacenar los usuarios en pausa temporal
 
 // Función para pausar un usuario por 5 minutos
 function pauseUser(senderId) {
-    pausedUsers[senderId] = Date.now() + 5 * 60 * 1000; // Tiempo actual + 5 minutos
+    pausedUsers[senderId] = Date.now() + 5 * 60 * 1000; // 5 minutos
+    console.log(`⏸️ Bot pausado para ${senderId} hasta ${new Date(pausedUsers[senderId]).toLocaleTimeString()}`);
 }
+
 
 // Función para verificar si un usuario está pausado
 function isUserPaused(senderId) {
-    return pausedUsers[senderId] && Date.now() < pausedUsers[senderId];
+    if (pausedUsers[senderId] && Date.now() < pausedUsers[senderId]) {
+        console.log(`⏳ Usuario ${senderId} sigue pausado hasta ${new Date(pausedUsers[senderId]).toLocaleTimeString()}`);
+        return true;
+    }
+    return false;
 }
+
 
 
 // Ruta para verificar el webhook
@@ -75,38 +82,48 @@ app.post('/webhook', async (req, res) => {
 
     if (body.object === 'page') {
         body.entry.forEach(async (entry) => {
-            const webhookEvent = entry.messaging[0];
-            const senderId = webhookEvent.sender.id;
-            const messageText = webhookEvent.message.text;
+            entry.messaging.forEach(async (webhookEvent) => {
+                const senderId = webhookEvent.sender.id;
 
-            console.log(`ID del remitente: ${senderId}`);
-            console.log(`Texto del mensaje: ${messageText}`);
+                // 📌 Detectar Mensajes Enviados por el Administrador
+                if (webhookEvent.message && webhookEvent.message.is_echo) {
+                    console.log(`🔹 El ADMINISTRADOR ha enviado un mensaje a ${senderId}`);
+                    pauseUser(senderId); // Pausar al usuario por 5 minutos
+                    return;
+                }
 
-            // 📌 Si el usuario está en la lista negra, no responder
-            const blacklist = getBlacklist();
-            if (blacklist.some(user => user.id === senderId)) {
-                console.log(`Usuario en lista negra detectado (${senderId}). No se responderá.`);
-                return;
-            }
+                // 📌 Detectar Mensajes Recibidos (Usuario → Bot)
+                if (webhookEvent.message && webhookEvent.message.text) {
+                    const messageText = webhookEvent.message.text;
+                    console.log(`📩 MENSAJE RECIBIDO | Usuario: ${senderId} | Texto: ${messageText}`);
 
-            // 📌 Si el usuario está pausado, no responder
-            if (isUserPaused(senderId)) {
-                console.log(`Usuario ${senderId} está pausado. No se responderá.`);
-                return;
-            }
+                    // 📌 Si el usuario está en la lista negra, no responder
+                    const blacklist = getBlacklist();
+                    if (blacklist.some(user => user.id === senderId)) {
+                        console.log(`⛔ Usuario en lista negra (${senderId}). No se responderá.`);
+                        return;
+                    }
 
-            // Continuar con la lógica del bot...
-            const userHistory = getHistory(senderId);
-            const limitedHistory = userHistory.slice(-8);
-            saveMessage(senderId, 'user', messageText);
+                    // 📌 Si el usuario está pausado, no responder
+                    if (isUserPaused(senderId)) {
+                        console.log(`⏸️ Usuario ${senderId} está pausado. No se responderá.`);
+                        return;
+                    }
 
-            const gptResponse = await chat(prompt, [
-                ...limitedHistory,
-                { role: "user", content: messageText },
-            ]);
+                    // 📌 Continuar con la lógica del bot...
+                    const userHistory = getHistory(senderId);
+                    const limitedHistory = userHistory.slice(-8);
+                    saveMessage(senderId, 'user', messageText);
 
-            saveMessage(senderId, 'assistant', gptResponse);
-            await sendMessage(senderId, gptResponse);
+                    const gptResponse = await chat(prompt, [
+                        ...limitedHistory,
+                        { role: "user", content: messageText },
+                    ]);
+
+                    saveMessage(senderId, 'assistant', gptResponse);
+                    await sendMessage(senderId, gptResponse);
+                }
+            });
         });
 
         res.status(200).send('EVENT_RECEIVED');
